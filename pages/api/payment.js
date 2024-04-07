@@ -1,5 +1,6 @@
-export default function payment(request, response) {
+import { Payment, MercadoPagoConfig } from "mercadopago";
 
+export default async function payment(request, response) {
   const authKey = process.env.AUTH_KEY;
 
   const bearer = request.headers["authorization"];
@@ -23,9 +24,71 @@ export default function payment(request, response) {
     });
   }
 
-  const monthPayments = request.body.payments;
+  const amount = request.body.payment;
+  const payer = request.body.payer;
+  const month = new Date().getMonth() + 1;
 
-  
+  if (!amount) {
+    return response.status(499).json({
+      message: "no amount informed",
+    });
+  }
 
+  if (!payer) {
+    return response.status(499).json({
+      message: "no payer info informed",
+    });
+  }
 
+  const data = {
+    amount: amount,
+    payer: payer,
+    month: month,
+  };
+
+  await callMercadoPago(data).then((res) => {
+    if (res) {
+      // Return just the qr code and copy and paste
+    }
+  });
+}
+
+async function callMercadoPago(data) {
+  const { v4: uuidv4 } = require("uuid");
+  const uuid = uuidv4();
+
+  const client = new MercadoPagoConfig({
+    accessToken: process.env.ACCESS_TOKEN,
+  });
+  const payment = new Payment(client);
+
+  try {
+    return payment
+      .create({
+        body: {
+          transaction_amount: data.amount,
+          description: `Valor de uso do sistema referente ao mês ${data.month}`,
+          payment_method_id: "pix",
+          payer: {
+            email: data.payer.email,
+            identification: {
+              type: data.payer.identificationType,
+              number: data.payer.number,
+            },
+          },
+          metadata: {
+            payer: data.payer.name,
+            month: data.month,
+            _id: uuid
+          },
+        },
+        requestOptions: { idempotencyKey: uuid },
+      })
+      .then((result) => {
+        return result;
+      });
+  } catch (error) {
+    console.error("Failed payment " + error);
+    return false;
+  }
 }
