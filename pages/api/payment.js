@@ -24,7 +24,7 @@ export default async function payment(request, response) {
     });
   }
 
-  const amount = request.body.payment;
+  const amount = request.body.amount;
   const payer = request.body.payer;
   const month = new Date().getMonth() + 1;
 
