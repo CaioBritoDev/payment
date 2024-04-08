@@ -47,9 +47,21 @@ export default async function payment(request, response) {
   };
 
   await callMercadoPago(data).then((res) => {
+
     if (res) {
-      // Return just the qr code and copy and paste
+
+      response.status(200).json({
+        link: res.point_of_interaction.transaction_data.ticket_url
+      })
+
+    } else {
+
+      response.status(499).json({
+        msg: "Algo deu errado, tente novamente!"
+      })
+
     }
+
   });
 }
 
@@ -62,11 +74,15 @@ async function callMercadoPago(data) {
   });
   const payment = new Payment(client);
 
+  const nextMonth = data.month + 1;
+  const year = new Date().getFullYear();
+
   try {
     return payment
       .create({
         body: {
           transaction_amount: data.amount,
+          date_of_expiration: new Date(year, nextMonth, 0).toISOString(),
           description: `Valor de uso do sistema referente ao mês ${data.month}`,
           payment_method_id: "pix",
           payer: {
@@ -79,7 +95,7 @@ async function callMercadoPago(data) {
           metadata: {
             payer: data.payer.name,
             month: data.month,
-            _id: uuid
+            _id: uuid,
           },
         },
         requestOptions: { idempotencyKey: uuid },
