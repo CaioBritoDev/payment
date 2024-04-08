@@ -5,34 +5,33 @@ async function handle(request, response) {
   const id = data["data.id"];
 
   if (type === "payment") {
-    // const payment = await getPayment(id);
-    // console.log(payment);
 
-    /*const data = {
+    const payment = await getPayment(id);
+    console.log(payment);
+
+    const data = {
       _id: payment.metadata._id,
       payment_status: payment.status,
     };
 
-    console.log(data);*/
+    console.log(data);
 
     // updateDatabase(data);
   }
 
-  response.status(200).json({
-    msg: "Tudo certo"
-  });
-  
+  response.status(200)
+
 }
 
 export default handle;
 
-async function getPayment(id) {
+function getPayment(id) {
   const { MercadoPago, Payment } = require("mercadopago");
 
   const client = new MercadoPago({ accessToken: process.env.ACCESS_TOKEN_TEST });
   const payment = new Payment(client);
 
-  return await payment
+  return payment
     .get({
       id: id,
     })
