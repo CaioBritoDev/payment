@@ -5,8 +5,8 @@ export default async function handle(request, response) {
   const id = data["data.id"];
 
   if (type === "payment") {
-    const payment = await getPayment(id);
-    console.log(payment);
+    // const payment = await getPayment(id);
+    // console.log(payment);
 
     /*const data = {
       _id: payment.metadata._id,
