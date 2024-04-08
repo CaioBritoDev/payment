@@ -65,6 +65,8 @@ async function callMercadoPago(data) {
   const { v4: uuidv4 } = require("uuid");
   const uuid = uuidv4();
 
+  data._id = uuid;
+
   const client = new MercadoPagoConfig({
     accessToken: process.env.ACCESS_TOKEN,
   });
@@ -91,16 +93,34 @@ async function callMercadoPago(data) {
           metadata: {
             payer: data.payer.name,
             month: data.month,
-            _id: uuid,
+            _id: data._id,
           },
         },
-        requestOptions: { idempotencyKey: uuid },
+        requestOptions: { idempotencyKey: data._id },
       })
       .then((result) => {
+        if (result) {
+          addToDatabase(data);
+        }
         return result;
       });
   } catch (error) {
     console.error("Failed payment " + error);
     return false;
+  }
+}
+
+async function addToDatabase(data) {
+  const pool = require("./lib/database");
+  const { _id, payment_status, month, year } = data;
+
+  try {
+    const newData = await pool.query(
+      "INSERT INTO management (_id, payment_status, month, year) VALUES($1, $2, $3, $4) RETURNING *",
+      [_id, "", new Date().getMonth() + 1, new Date().getFullYear()]
+    );
+    console.log(newData.rows)
+  } catch (error) {
+    console.error(error)
   }
 }
