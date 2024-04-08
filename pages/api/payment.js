@@ -24,6 +24,8 @@ export default async function payment(request, response) {
     });
   }
 
+  if (typeof request.body === "string") request.body = JSON.parse(request.body);
+
   const amount = request.body.amount;
   const payer = request.body.payer;
   const month = new Date().getMonth() + 1;
@@ -47,21 +49,15 @@ export default async function payment(request, response) {
   };
 
   await callMercadoPago(data).then((res) => {
-
     if (res) {
-
       response.status(200).json({
-        link: res.point_of_interaction.transaction_data.ticket_url
-      })
-
+        link: res.point_of_interaction.transaction_data.ticket_url,
+      });
     } else {
-
       response.status(499).json({
-        msg: "Algo deu errado, tente novamente!"
-      })
-
+        msg: "Algo deu errado, tente novamente!",
+      });
     }
-
   });
 }
 
