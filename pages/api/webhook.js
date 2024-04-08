@@ -8,12 +8,12 @@ export default async function handle(request, response) {
     const payment = await getPayment(id);
     console.log(payment);
 
-    const data = {
+    /*const data = {
       _id: payment.metadata._id,
       payment_status: payment.status,
     };
 
-    console.log(data);
+    console.log(data);*/
 
     // updateDatabase(data);
   }
@@ -34,7 +34,9 @@ function getPayment(id) {
     .then((res) => {
       return res;
     })
-    .catch((err) => console.error(err));
+    .catch((err) => {
+        return err;
+    });
 }
 
 async function updateDatabase(data) {
