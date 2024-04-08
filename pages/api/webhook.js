@@ -1,5 +1,5 @@
 export default async function handle(request, response) {
-  const data = request;
+  const data = request.query;
 
   const type = data["type"];
   const id = data["data.id"];
@@ -21,13 +21,13 @@ export default async function handle(request, response) {
   return response.status(200);
 }
 
-function getPayment(id) {
+async function getPayment(id) {
   const { MercadoPago, Payment } = require("mercadopago");
 
   const client = new MercadoPago({ accessToken: process.env.ACCESS_TOKEN });
   const payment = new Payment(client);
 
-  return payment
+  return await payment
     .get({
       id: id,
     })
