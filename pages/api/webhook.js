@@ -1,5 +1,5 @@
 export default async function handle(request, response) {
-  const data = request.query;
+  const data = request;
 
   const type = data["type"];
   const id = data["data.id"];
@@ -10,7 +10,7 @@ export default async function handle(request, response) {
 
     const data = {
       _id: payment.metadata._id,
-      payment_status: payment.status
+      payment_status: payment.status,
     };
 
     console.log(data);
@@ -38,10 +38,11 @@ function getPayment(id) {
 async function updateDatabase(data) {
   const pool = require("./lib/database");
   const { _id, payment_status } = data;
-  const update = await pool.query(
-    "UPDATE management SET payment_status = $2 WHERE _id = $1",
-    [_id, payment_status]
-  )
-  .catch(err => console.error(err))
+  const update = await pool
+    .query("UPDATE management SET payment_status = $2 WHERE _id = $1", [
+      _id,
+      payment_status,
+    ])
+    .catch((err) => console.error(err));
   console.log(update);
 }
