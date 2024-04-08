@@ -5,7 +5,6 @@ async function handle(request, response) {
   const id = data["data.id"];
 
   if (type === "payment") {
-
     const payment = await getPayment(id);
     console.log(payment);
 
@@ -19,28 +18,28 @@ async function handle(request, response) {
     // updateDatabase(data);
   }
 
-  response.status(200)
-
+  response.status(200);
 }
 
 export default handle;
 
 function getPayment(id) {
-  const { MercadoPago, Payment } = require("mercadopago");
+  const axios = require("axios");
 
-  const client = new MercadoPago({ accessToken: process.env.ACCESS_TOKEN_TEST });
-  const payment = new Payment(client);
+  const url = "https://api.mercadopago.com/v1/payments/" + id;
 
-  return payment
-    .get({
-      id: id,
-    })
-    .then((res) => {
-      return res;
-    })
-    .catch((err) => {
-        return err;
-    });
+  try {
+    return axios
+      .get(url, {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.ACCESS_TOKEN_TEST}`,
+      })
+      .then((res) => {
+        return res;
+      });
+  } catch (error) {
+    return error;
+  }
 }
 
 async function updateDatabase(data) {
