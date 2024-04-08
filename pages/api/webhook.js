@@ -4,7 +4,7 @@ async function handle(request, response) {
   const type = data["type"];
   const id = data["data.id"];
 
-  if (type === "payment") {
+  /*if (type === "payment") {
     const payment = await getPayment(id);
     console.log(payment);
 
@@ -16,7 +16,7 @@ async function handle(request, response) {
     console.log(data);
 
     // updateDatabase(data);
-  }
+  }*/
 
   response.status(200);
 }
