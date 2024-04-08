@@ -4,8 +4,6 @@ export default async function handle(request, response) {
   const type = data["type"];
   const id = data["data.id"];
 
-  response.status(200);
-
   if (type === "payment") {
     const payment = await getPayment(id);
     console.log(payment);
@@ -19,6 +17,8 @@ export default async function handle(request, response) {
 
     // updateDatabase(data);
   }
+
+  return response.status(200);
 }
 
 function getPayment(id) {
