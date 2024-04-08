@@ -1,8 +1,8 @@
 export default async function handle(request, response) {
   const data = request.query;
 
-  const type = dados["type"];
-  const id = dados["data.id"];
+  const type = data["type"];
+  const id = data["data.id"];
 
   if (type === "payment") {
     const payment = await getPayment(id);
