@@ -24,7 +24,7 @@ export default async function handle(request, response) {
 async function getPayment(id) {
   const { MercadoPago, Payment } = require("mercadopago");
 
-  const client = new MercadoPago({ accessToken: process.env.ACCESS_TOKEN });
+  const client = new MercadoPago({ accessToken: process.env.ACCESS_TOKEN_TEST });
   const payment = new Payment(client);
 
   return await payment
