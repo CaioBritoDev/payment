@@ -1,4 +1,4 @@
-export default async function handle(request, response) {
+async function handle(request, response) {
   const data = request.query;
 
   const type = data["type"];
@@ -18,8 +18,13 @@ export default async function handle(request, response) {
     // updateDatabase(data);
   }
 
-  return response.status(200);
+  response.status(200).json({
+    msg: "Tudo certo"
+  });
+  
 }
+
+export default handle;
 
 async function getPayment(id) {
   const { MercadoPago, Payment } = require("mercadopago");
