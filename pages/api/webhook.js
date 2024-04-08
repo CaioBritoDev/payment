@@ -35,9 +35,11 @@ function getPayment(id) {
         Authorization: `Bearer ${process.env.ACCESS_TOKEN_TEST}`,
       })
       .then((res) => {
+        console.log(res)
         return res;
       });
   } catch (error) {
+    console.log(error)
     return error;
   }
 }
